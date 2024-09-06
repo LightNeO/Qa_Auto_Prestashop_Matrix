@@ -55,3 +55,25 @@ class BasePage:
         else:
             raise ValueError(f"Currency '{currency}' is not allowed. Choose from {', '.join(ALLOWED_CURRENCIES)}.")
         self.wait_for_page_load()
+
+    def get_currency_selector_value(self, byDotType, locator):
+        return self.find_element(byDotType, locator).text
+
+    def get_expected_currency_sign(self):
+        currency_selector_text = self.get_currency_selector_value(By.XPATH, MainPageLocators.CURRENCY_SELECTOR)
+
+        if currency_selector_text == 'UAH':
+            expected_currency_sign = '₴'
+        elif currency_selector_text == 'USD':
+            expected_currency_sign = '$'
+        elif currency_selector_text == 'EUR':
+            expected_currency_sign = '€'
+
+        return expected_currency_sign
+
+    def get_products_list(self, byDotType, parent_locator, child_locator):
+        parent_element = self.find_element(byDotType, parent_locator)
+        child_elements = parent_element.find_elements(byDotType, child_locator)
+        return child_elements
+
+

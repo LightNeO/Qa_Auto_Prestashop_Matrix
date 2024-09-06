@@ -10,7 +10,7 @@ def test_products_currency(browser, wait):
     main_page = MainPage(browser, wait)
     main_page.open_main_page()
 
-    product_list = main_page.get_products_list()
+    product_list = main_page.get_products_list(By.XPATH, MainPageLocators.PRODUCTS_PARENT_ELEMENT, MainPageLocators.PRODUCT_CHILD_ELEMENT)
     currency_sign = main_page.get_expected_currency_sign()
 
     is_currency_sign_correct = True

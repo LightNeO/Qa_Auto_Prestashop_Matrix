@@ -12,22 +12,8 @@ class SearchPage(BasePage):
         self.enter_text(By.ID, MainPageLocators.SEARCH_ID, search_text)
         self.click(By.XPATH, MainPageLocators.SEARCH_BTN)
 
-    def get_products_list(self):
-        parent_element = self.find_element(By.XPATH, SearchPageLocators.PRODUCTS_PARENT_ELEMENT)
-        child_elements = parent_element.find_elements(By.XPATH, SearchPageLocators.PRODUCT_CHILD_ELEMENT)
-        return child_elements
 
-    def get_currency_selector_value(self):
-        return self.find_element(By.XPATH, MainPageLocators.CURRENCY_SELECTOR).text
 
-    def get_expected_currency_sign(self):
-        currency_selector_text = self.get_currency_selector_value()
 
-        if currency_selector_text == 'UAH':
-            expected_currency_sign = '₴'
-        elif currency_selector_text == 'USD':
-            expected_currency_sign = '$'
-        elif currency_selector_text == 'EUR':
-            expected_currency_sign = '€'
 
-        return expected_currency_sign
+
