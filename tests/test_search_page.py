@@ -1,12 +1,13 @@
-import time
-
-from modules.ui.pages.main_page import MainPage
 from modules.ui.pages.search_page import SearchPage
 from selenium.webdriver.common.by import By
 from modules.ui.pages.locators import SearchPageLocators
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def test_sorting_price(browser, wait):
+def test_sorting_by_price(browser, wait):
+    logger.info("Starting test: test_sorting_by_price")
     search_page = SearchPage(browser, wait)
     search_page.open_search_page('dress')
 
@@ -21,10 +22,12 @@ def test_sorting_price(browser, wait):
         price = float(product.text.replace(currency_sign, '').replace(',', '').replace(' ', ''))
         prices.append(price)
 
-    assert prices == sorted(prices, reverse=True)
+    assert prices == sorted(prices, reverse=True), "Not all products are sorted by price."
+    logger.info("Test passed: All products are sorted by price.")
 
 
-def test_price(browser, wait):
+def test_discount_price(browser, wait):
+    logger.info("Starting test: test_discount_price")
     search_page = SearchPage(browser, wait)
     search_page.open_search_page('dress')
 
@@ -36,6 +39,8 @@ def test_price(browser, wait):
     currency_sign = search_page.get_expected_currency_sign()
 
     errors = []
+
+    logger.info(f"Checking discount prices for products with currency sign: {currency_sign}")
     for index, product in enumerate(product_list):
         price = product.text.replace(currency_sign, '').replace(' ', '')
         if '%' in price:
@@ -43,14 +48,19 @@ def test_price(browser, wait):
             old_price = float(product_list[index - 1].text.replace(' ', '').replace(currency_sign, '').replace(',', '.'))
             new_price = float(product_list[index - 2].text.replace(' ', '').replace(currency_sign, '').replace(',', '.'))
             expected_new_price = (old_price - (round(old_price / 100 * percent)))
-            try:
-                assert new_price == expected_new_price, f'New price is {new_price}, but should be {expected_new_price}'
-            except AssertionError as e:
-                errors.append(str(e))
+
+            if new_price == expected_new_price:
+                success_message = (f'Product {index}: New price {new_price} matches expected price {expected_new_price}.')
+                logger.info(success_message)
+            else:
+                error_message = (f'Product {index}: New price {new_price} does NOT match expected price {expected_new_price}.')
+                logger.error(error_message)
+                errors.append(error_message)
 
     if errors:
-        print('Errors list:')
+        logger.error('Discount price validation failed with the following errors:')
         for error in errors:
-            print(error)
+            logger.error(error)
+        assert False, "There are errors in discount price calculations. Check logs for details."
     else:
-        print('No errors')
+        logger.info("Test passed: Discount prices are calculated correctly.")

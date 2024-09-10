@@ -5,6 +5,13 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
+import logging
+
+
+def pytest_configure(config):
+    logging.basicConfig(filename="D:\\.QA\\Qa_Auto_Prestashop_Matrix\\logs\\driver_actions.log",
+                        level=logging.INFO, filemode='w',
+                        format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 @pytest.fixture(scope='session')
